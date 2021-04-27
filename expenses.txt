@@ -1,0 +1,108 @@
+0,spozywcze-0,2020-08-06,7.20,1.898,mozzarella
+1,spozywcze-0,2020-08-06,7.56,0.793,ogorki
+2,spozywcze-0,2020-08-06,7.04,1.555,kurczak
+3,spozywcze-0,2020-08-06,3.86,0.955,jablka
+4,spozywcze-0,2020-08-06,9.48,0.867,ryba
+5,spozywcze-1,2020-01-16,4.42,0.794,jablka
+6,spozywcze-1,2020-01-16,6.18,1.955,kurczak
+7,spozywcze-1,2020-01-16,3.38,0.871,ogorki
+8,spozywcze-1,2020-01-16,5.93,1.078,krewetki
+9,spozywcze-2,2020-09-22,5.85,0.387,mozzarella
+10,spozywcze-2,2020-09-22,3.77,0.286,ser
+11,spozywcze-2,2020-09-22,6.45,2,jogurt
+12,spozywcze-2,2020-09-22,0.86,1.824,mozzarella
+13,spozywcze-3,2020-04-15,1.10,1.237,ogorki
+14,spozywcze-3,2020-04-15,0.87,0.227,ryba
+15,spozywcze-3,2020-04-15,5.05,1.180,ogorki
+16,spozywcze-3,2020-04-15,0.86,1.060,ryba
+17,spozywcze-3,2020-04-15,2.00,2,chleb
+18,spozywcze-3,2020-04-15,4.70,0.843,kielbasa
+19,spozywcze-3,2020-04-15,6.93,0.937,kurczak
+20,spozywcze-3,2020-04-15,6.25,0.723,kielbasa
+21,spozywcze-3,2020-04-15,5.90,1,mleko
+22,spozywcze-4,2020-03-14,9.04,1.569,ogorki
+23,spozywcze-4,2020-03-14,3.14,0.554,pomidory
+24,spozywcze-5,2020-01-12,6.34,1.216,krewetki
+25,spozywcze-5,2020-01-12,2.15,1.306,kurczak
+26,spozywcze-5,2020-01-12,9.27,1.064,ogorki
+27,spozywcze-5,2020-01-12,6.05,4,mleko
+28,spozywcze-5,2020-01-12,9.92,1.997,ryba
+29,spozywcze-5,2020-01-12,9.22,5,jogurt
+30,spozywcze-5,2020-01-12,3.92,1.028,jablka
+31,spozywcze-5,2020-01-12,5.22,1.440,krewetki
+32,spozywcze-5,2020-01-12,9.88,1.975,kurczak
+33,spozywcze-6,2020-01-11,8.27,0.999,ryba
+34,spozywcze-6,2020-01-11,7.03,1.591,ryba
+35,spozywcze-6,2020-01-11,2.64,0.323,pomidory
+36,spozywcze-6,2020-01-11,3.21,0.362,ser
+37,spozywcze-6,2020-01-11,1.32,5,bulki
+38,spozywcze-6,2020-01-11,7.94,1.642,banany
+39,spozywcze-6,2020-01-11,4.89,1.585,kurczak
+40,spozywcze-6,2020-01-11,7.20,5,jogurt
+41,spozywcze-6,2020-01-11,4.61,5,jogurt
+42,spozywcze-7,2020-01-13,6.64,3,chleb
+43,spozywcze-7,2020-01-13,7.39,0.961,ryba
+44,spozywcze-7,2020-01-13,9.97,1.937,ogorki
+45,spozywcze-7,2020-01-13,2.75,1.822,kurczak
+46,spozywcze-8,2020-01-20,7.10,1.647,krewetki
+47,spozywcze-8,2020-01-20,6.89,0.451,jablka
+48,spozywcze-8,2020-01-20,3.67,3,mleko
+49,spozywcze-8,2020-01-20,7.50,4,chleb
+50,spozywcze-8,2020-01-20,6.12,2.000,ser
+51,spozywcze-8,2020-01-20,1.66,1.964,ser
+52,spozywcze-8,2020-01-20,7.27,0.818,pomidory
+53,spozywcze-9,2020-04-29,2.86,0.750,ogorki
+54,spozywcze-9,2020-04-29,5.38,0.240,ser
+55,spozywcze-9,2020-04-29,7.12,5,bulki
+56,spozywcze-9,2020-04-29,3.85,1.283,ser
+57,spozywcze-9,2020-04-29,8.39,4,mleko
+58,spozywcze-9,2020-04-29,0.73,1.226,kurczak
+59,restauracja-0,2021-03-08,53.02,1,restauracja
+60,restauracja-1,2021-04-14,83.75,1,restauracja
+61,restauracja-2,2021-02-12,68.90,1,restauracja
+62,restauracja-3,2020-05-09,61.48,1,restauracja
+63,restauracja-4,2021-01-11,71.78,1,restauracja
+64,kawiarnia-0,2020-07-14,99.74,1,kawiarnia
+65,kawiarnia-1,2020-05-18,67.34,1,kawiarnia
+66,kawiarnia-2,2021-02-02,76.44,1,kawiarnia
+67,kawiarnia-3,2020-05-10,49.44,1,kawiarnia
+68,kawiarnia-4,2020-02-17,71.37,1,kawiarnia
+69,ubrania-0,2020-07-11,88.97,1,spodnie
+70,ubrania-0,2020-07-11,76.35,1,buty
+71,ubrania-0,2020-07-11,126.90,1,spodnie
+72,ubrania-1,2020-01-22,178.85,1,buty
+73,ubrania-1,2020-01-22,43.82,1,koszulka
+74,ubrania-1,2020-01-22,43.71,1,buty
+75,ubrania-2,2021-03-08,41.29,1,buty
+76,ubrania-2,2021-03-08,73.98,1,koszulka
+77,ubrania-2,2021-03-08,115.01,1,buty
+78,ubrania-3,2020-06-08,110.86,1,koszulka
+79,ubrania-3,2020-06-08,96.04,1,buty
+80,ubrania-4,2020-02-02,185.10,1,buty
+81,ubrania-4,2020-02-02,157.68,1,koszulka
+82,ubrania-4,2020-02-02,121.31,1,buty
+83,ubrania-5,2020-12-04,111.40,1,koszulka
+84,ubrania-5,2020-12-04,140.20,1,buty
+85,ubrania-6,2020-09-09,77.63,1,koszulka
+86,ubrania-6,2020-09-09,42.63,1,koszulka
+87,ubrania-6,2020-09-09,114.94,1,koszulka
+88,ubrania-7,2020-06-24,70.58,1,spodnie
+89,ubrania-7,2020-06-24,99.20,1,spodnie
+90,ubrania-8,2020-08-07,123.51,1,koszulka
+91,ubrania-9,2021-02-03,140.94,1,buty
+92,ubrania-9,2021-02-03,51.15,1,koszulka
+93,samochod-0,2021-04-10,55.47,1,paliwo
+94,samochod-1,2020-04-09,90.04,1,paliwo
+95,samochod-2,2020-02-18,176.55,1,opony
+96,samochod-3,2020-12-06,129.57,1,wycieraczki do samochodu
+97,samochod-4,2021-01-18,83.94,1,naprawa samochodu
+98,rachunki-0,2020-11-13,105.50,1,rachunek za prad
+99,rachunki-1,2020-05-04,138.22,1,rachunek za wode
+100,rachunki-2,2021-03-04,123.51,1,rachunek za prad
+101,rachunki-3,2020-10-18,145.89,1,abonament za telefon
+102,rachunki-4,2020-06-27,142.12,1,rachunek za wode
+103,rachunki-5,2020-09-02,121.29,1,abonament za internet
+104,rachunki-6,2021-04-12,116.08,1,rachunek za wode
+105,rachunki-7,2020-08-23,125.60,1,rachunek za wode
+106,rachunki-8,2020-04-12,126.15,1,rachunek za wode
+107,rachunki-9,2020-04-19,130.70,1,abonament za internet

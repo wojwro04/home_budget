@@ -1,0 +1,28 @@
+chleb,pieczywo
+bulki,pieczywo
+jogurt,nabial
+mleko,nabial
+ser,nabial
+mozzarella,nabial
+szynka,wedliny
+kielbasa,wedliny
+ryba,ryby
+krewetki,ryby
+kurczak,mieso
+pomidory,warzywa
+ogorki,warzywa
+jablka,owoce
+banany,owoce
+restauracja,restauracje
+kawiarnia,restauracje
+paliwo,eksploatacja samochodu
+wycieraczki do samochodu,eksploatacja samochodu
+naprawa samochodu,naprawy samochodu
+opony,eksploatacja samochodu
+spodnie,odziez
+buty,obuwie
+koszulka,odziez
+abonament za telefon,multimedia
+abonament za internet,multimedia
+rachunek za prad,dom
+rachunek za wode,dom
