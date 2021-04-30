@@ -1,27 +1,39 @@
 from django.db import models
 
-
-class Categories(models.Model):
+class Group(models.Model):
     name = models.CharField(max_length=200)
-    group = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.name
+    
+class Category(models.Model):
+    name = models.CharField(max_length=200)
+    group = models.ManyToManyField(Group)
     
     def __str__(self):
         return self.name
 
-class Products(models.Model):
+class Product(models.Model):
     name = models.CharField(max_length=200)
-    category = models.ForeignKey(Categories, on_delete=models.CASCADE, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
         return self.name
 
-class Expenses(models.Model):
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.title
+
+class Expense(models.Model):
     expense_id = models.IntegerField()
-    title = models.CharField(max_length=512)
     date = models.DateField()
     price = models.FloatField()
     amount = models.FloatField()
-    product = models.ManyToManyField(Products)
-
+    product = models.ManyToManyField(Product)
+    title = models.ManyToManyField(Event)
+    
     def __str__(self):
-        return self.title
+        return self.expense_id
+

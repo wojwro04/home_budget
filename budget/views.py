@@ -2,26 +2,43 @@ from django.http import HttpResponse
 from django.shortcuts import render
 import numpy as np
 
-from .models import Categories
-from .models import Products
-from .models import Expenses
+from .models import Group
+from .models import Category
+from .models import Product
+from .models import Event
+from .models import Expense
 
 def index(request):
     hello_message = "Witaj!"
     return HttpResponse("%s" % hello_message)
 
+def del_groups(request):
+    Group.objects.all().delete()
+    return HttpResponse("Group - usunięto")
+
 def del_categories(request):
-    Categories.objects.all().delete()
-    return HttpResponse("Categories - usunięto")
+    Category.objects.all().delete()
+    return HttpResponse("Category - usunięto")
 
 def del_products(request):
-    Products.objects.all().delete()
-    return HttpResponse("Products - usunięto")
+    Product.objects.all().delete()
+    return HttpResponse("Product - usunięto")
+    
+def del_events(request):
+    Event.objects.all().delete()
+    return HttpResponse("Event - usunięto")
     
 def del_expenses(request):
-    Expenses.objects.all().delete()
-    return HttpResponse("Expenses - usunięto")
+    Expense.objects.all().delete()
+    return HttpResponse("Expense - usunięto")
     
+def groups(request):
+    grs = Group.objects.all()
+    lista = ""
+    for g in grs:
+        lista += f"{g}<br>"
+    return HttpResponse("%s" % lista)
+
 def categories(request):
     cats = Categories.objects.all()
     lista = ""
@@ -36,6 +53,13 @@ def products(request):
         lista += f"{p}<br>"
     return HttpResponse("%s" % lista)
 
+def events(request):
+    evs = Event.objects.all()
+    lista = ""
+    for e in evs:
+        lista += f"{e}<br>"
+    return HttpResponse("%s" % lista)
+
 def expenses(request):
     exps = Expenses.objects.all()
     lista = ""
@@ -43,6 +67,22 @@ def expenses(request):
         lista += f"{e}<br>"
     return HttpResponse("%s" % lista)
 
+def add_groups(request):
+    groups = np.loadtxt('groups.txt', delimiter=',', dtype='str')
+    log_added = ""
+    log_excepted = ""
+    for group in groups:
+        new_name = group[0]
+        q = Group.objects.filter(name=new_name)
+        if len(q) == 0:
+            g = Group(name=new_name)
+            g.save()
+            log_added += new_name + "<br>"
+        else:
+            log_excepted = new_name + "<br>"
+        
+    return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
+    
 def add_categories(request):
     categories = np.loadtxt('categories.txt', delimiter=',', dtype='str')
     log_added = ""
@@ -50,9 +90,12 @@ def add_categories(request):
     for category in categories:
         new_name = category[0]
         new_group = category[1]
-        q = Categories.objects.filter(name=new_name)
+        q = Category.objects.filter(name=new_name)
         if len(q) == 0:
-            c = Categories(name=new_name, group=new_group)
+            g = Group.objects.get(name=new_group)
+            c = Category(name=new_name)
+            c.save()
+            c.group.add(g)
             c.save()
             log_added += new_name + "<br>"
         else:
@@ -67,11 +110,27 @@ def add_products(request):
     for product in products:
         new_name = product[0]
         new_category = product[1]
-        q = Products.objects.filter(name=new_name)
+        q = Product.objects.filter(name=new_name)
         if len(q) == 0:
-            c = Categories.objects.get(name=new_category)
-            p = Products(name=new_name, category=c)
+            c = Category.objects.get(name=new_category)
+            p = Product(name=new_name, category=c)
             p.save()
+            log_added += new_name + "<br>"
+        else:
+            log_excepted = new_name + "<br>"
+        
+    return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
+
+def add_events(request):
+    events = np.loadtxt('events.txt', delimiter=',', dtype='str')
+    log_added = ""
+    log_excepted = ""
+    for event in events:
+        new_title = event[0]
+        q = Event.objects.filter(title=new_title)
+        if len(q) == 0:
+            e = Event(title=new_title)
+            e.save()
             log_added += new_name + "<br>"
         else:
             log_excepted = new_name + "<br>"
@@ -89,12 +148,15 @@ def add_expenses(request):
         new_price = expense[3]
         new_amount = expense[4]
         new_product = expense[5]
-        q = Expenses.objects.filter(expense_id=new_id)
+        q = Expense.objects.filter(expense_id=new_id)
         if len(q) == 0:
-            p = Products.objects.get(name=new_product)
-            e = Expenses(expense_id=new_id, title=new_title, date=new_date, price=new_price, amount=new_amount)
+            p = Product.objects.get(name=new_product)
+            ev = Event.objects.get(title=new_title)
+            e = Expense(expense_id=new_id, date=new_date, price=new_price, amount=new_amount)
             e.save()
             e.product.add(p)
+            e.save()
+            e.title.add(ev)
             e.save()
             log_added += new_title + "<br>"
         else:
