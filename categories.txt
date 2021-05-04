@@ -1,14 +1,4 @@
-pieczywo,jedzenie
-nabial,jedzenie
-wedliny,jedzenie
-mieso,jedzenie
-ryby,jedzenie
-warzywa,jedzenie
-owoce,jedzenie
-restauracje,jedzenie
-eksploatacja samochodu,samochod
-naprawy samochodu,samochod
-odziez,ubrania
-obuwie,ubrania
-multimedia,rachunki
-dom,rachunki
+jedzenie
+samochod
+ubrania
+rachunki
