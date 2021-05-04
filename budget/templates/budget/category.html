@@ -1,0 +1,12 @@
+<a href="/budget/">Strona główna</a>
+<h1>Kategoria: {{ category }}</h1>
+Podkategorie:
+{% if subcategory_list %}
+    <ul>
+    {% for subcategory in subcategory_list %}
+        <li><a href="/budget/subcategory/{{ subcategory.name }}/">{{ subcategory.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak dostępnych podkategorii</p>
+{% endif %}

@@ -1,0 +1,5 @@
+<a href="/budget/">Strona główna</a>
+<h2>Tutaj widoczne są wszystkie wydarzenia:</h2>
+{% for event in events %}
+	<li><a href="/budget/event/{{ event }}/">{{ event }}</a></li>
+{% endfor %}

@@ -1,0 +1,14 @@
+<a href="/budget/">Strona główna</a>
+<h1>Podkategoria: {{ subcategory }}</h1>
+<h2>Kategoria: <a href="/budget/category/{{ category }}/">{{ category }}</a></h2><br>
+<br>
+Produkty:
+{% if product_list %}
+    <ul>
+    {% for product in product_list %}
+        <li><a href="/budget/product/{{ product.name }}/">{{ product.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak dostępnych produktów</p>
+{% endif %}

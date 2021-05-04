@@ -1,0 +1,12 @@
+<a href="/budget/">Strona główna</a>
+<h1>Wydarzenie: {{ event }}</h1>
+Wydatki:
+{% if expense_list %}
+    <ul>
+    {% for expense in expense_list %}
+        <li><a href="/budget/expense/{{ expense }}/">{{ expense }} - {{ expense.product.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak dostępnych podkategorii</p>
+{% endif %}

@@ -1,0 +1,5 @@
+<a href="/budget/">Strona główna</a>
+<h2>Tutaj widoczne są wszystkie podkategorie:</h2>
+{% for subcategory in subcategories %}
+	<li><a href="/budget/subcategory/{{ subcategory.name }}/">{{ subcategory.name }}</a></li>
+{% endfor %}

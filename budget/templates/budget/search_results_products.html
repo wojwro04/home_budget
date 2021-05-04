@@ -1,0 +1,9 @@
+<a href="/budget/">Strona główna</a>
+<h2>Wyniki wyszukiwania:</h2>
+{% if products %}
+	{% for product in products %}
+		<li><a href="/budget/product/{{ product.name }}/">{{ product.name }}</a></li>
+	{% endfor %}
+{% else %}
+    <p>Nie znaleziono produktów</p>
+{% endif %}

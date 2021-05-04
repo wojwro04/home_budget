@@ -1,0 +1,5 @@
+<a href="/budget/">Strona główna</a>
+<h2>Tutaj widoczne są wszystkie produkty:</h2>
+{% for product in products %}
+	<li><a href="/budget/product/{{ product.name }}/">{{ product.name }}</a></li>
+{% endfor %}

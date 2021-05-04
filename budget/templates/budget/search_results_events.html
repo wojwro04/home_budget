@@ -1,0 +1,9 @@
+<a href="/music/">Strona główna</a>
+<h2>Wyniki wyszukiwania:</h2>
+{% if events %}
+	{% for event in events %}
+		<li><a href="/budget/event/{{ event.title }}/">{{ event.title }}</a></li>
+	{% endfor %}
+{% else %}
+    <p>Nie znaleziono wydarzeń</p>
+{% endif %}

@@ -1,0 +1,5 @@
+<a href="/budget/">Strona główna</a>
+<h2>Tutaj widoczne są wszystkie wydatki:</h2>
+{% for expense in expenses %}
+	<li><a href="/budget/expense/{{ expense.expense_id }}/">{{ expense.expense_id }} - {{ expense.product }}</a></li>
+{% endfor %}

@@ -1,0 +1,9 @@
+<a href="/music/">Strona główna</a>
+<h2>Wyniki wyszukiwania:</h2>
+{% if expenses %}
+	{% for expense in expenses %}
+		<li><a href="/budget/expense/{{ expense }}/">{{ expense }}</a></li>
+	{% endfor %}
+{% else %}
+    <p>Nie znaleziono wydatków</p>
+{% endif %}
