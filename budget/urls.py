@@ -25,5 +25,6 @@ urlpatterns = [
     path('add_products/', views.add_products, name='add_products'),
     path('add_events/', views.add_events, name='add_events'),
     path('add_expenses/', views.add_expenses, name='add_expenses'),
-    
+    path('plot/', views.plot, name='plot'),
+
 ]

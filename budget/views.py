@@ -2,6 +2,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as pl
+import io, base64
+
+
 
 from .models import Category
 from .models import Subcategory
@@ -9,6 +15,48 @@ from .models import Product
 from .models import Event
 from .models import Expense
 from .forms import SearchForm
+
+
+def plot(request):
+
+    #cats = Category.objects.all()
+    expenses = Expense.objects.all()
+    d = {}
+    for exp in expenses:
+        sub = Subcategory.objects.get(product=exp.product)
+        cat = Category.objects.get(subcategory=sub)
+        if cat.name in d.keys():
+            d[cat.name].append(exp.price * exp.amount)
+        else:
+            d[cat.name] = []
+            d[cat.name].append(exp.price * exp.amount)
+    #print(d)
+
+    labels = list(d.keys())
+    sizes = []
+    for lab in labels:
+        sizes.append(np.sum(d[lab]))
+
+    # Pie chart, where the slices will be ordered and plotted counter-clockwise:
+    explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+    fig1, ax1 = pl.subplots()
+    ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    #plt.show()
+    flike = io.BytesIO()
+    #response = HttpResponse(content_type='image/png')
+    fig1.savefig(flike)
+    b64 = base64.b64encode(flike.getvalue()).decode()
+
+    context = {}
+    context['chart'] = b64
+
+    template = loader.get_template('budget/plot.html')
+    return HttpResponse(template.render(context, request))
+    return response
 
 
 def index(request):
@@ -31,7 +79,7 @@ def search(request):
                         except Product.DoesNotExist:
                             products = []
                             return search_results_products(request, products)
-                    else:                
+                    else:
                         products = Product.objects.filter(name__contains=request.POST['title'])
                         return search_results_products(request, products)
             if request.POST['choice_field'] == 'expense':
@@ -42,7 +90,7 @@ def search(request):
                         except Expense.DoesNotExist:
                             expenses = []
                             return search_results_expenses(request, expenses)
-                    else:                
+                    else:
                         expenses = Expense.objects.filter(expense_id__contains=request.POST['title'])
                         return search_results_expenses(request, expenses)
             if request.POST['choice_field'] == 'event':
@@ -53,7 +101,7 @@ def search(request):
                         except Event.DoesNotExist:
                             events = []
                             return search_results_events(request, events)
-                    else:                
+                    else:
                         events = Event.objects.filter(title__contains=request.POST['title'])
                         return search_results_events(request, events)
     else:
@@ -87,7 +135,7 @@ def search_results_events(request, events):
 def del_products(request):
     Product.objects.all().delete()
     return HttpResponse("Product - usunięto")
-    
+
 def del_subcategories(request):
     Subcategory.objects.all().delete()
     return HttpResponse("Subcategory - usunięto")
@@ -99,7 +147,7 @@ def del_categories(request):
 def del_expenses(request):
     Expense.objects.all().delete()
     return HttpResponse("Expense - usunięto")
-    
+
 def del_events(request):
     Event.objects.all().delete()
     return HttpResponse("Event - usunięto")
@@ -125,7 +173,7 @@ def product(request, product):
         'category': category,
     }
     return HttpResponse(template.render(context, request))
-    
+
 def subcategories(request):
     subcategories = Subcategory.objects.all()
     template = loader.get_template('budget/subcategories.html')
@@ -199,7 +247,7 @@ def event(request, event):
         'expense_list': expense_list,
     }
     return HttpResponse(template.render(context, request))
-    
+
 #######################################################
 
 def add_products(request):
@@ -215,7 +263,7 @@ def add_products(request):
             log_added += new_name + "<br>"
         else:
             log_excepted = new_name + "<br>"
-        
+
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
 def add_subcategories(request):
@@ -239,7 +287,7 @@ def add_subcategories(request):
             log_added += new_name + "<br>"
         else:
             log_excepted = new_name + "<br>"
-        
+
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
 def add_categories(request):
@@ -263,9 +311,9 @@ def add_categories(request):
             log_added += new_name + "<br>"
         else:
             log_excepted = new_name + "<br>"
-        
+
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
-    
+
 def add_expenses(request):
     expenses = np.loadtxt('expenses.txt', delimiter=',', dtype='str')
     products = np.loadtxt('products.txt', delimiter=',', dtype='str')
@@ -285,13 +333,13 @@ def add_expenses(request):
             # for product in products:
                 # pr_name = product[0]
                 # if pr_name == new_product:
-                    
+
                     # e.product.add(p)
                     # e.save()
             log_added += new_id + "<br>"
         else:
             log_excepted = new_id + "<br>"
-        
+
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
 def add_events(request):
@@ -315,6 +363,5 @@ def add_events(request):
             log_added += new_title + "<br>"
         else:
             log_excepted = new_title + "<br>"
-        
-    return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
+    return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
