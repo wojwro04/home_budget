@@ -279,14 +279,15 @@ def add_expenses(request):
         new_product = expense[5]
         q = Expense.objects.filter(expense_id=new_id)
         if len(q) == 0:
-            e = Expense(expense_id=new_id, date=new_date, price=new_price, amount=new_amount)
+            p = Product.objects.get(name=new_product)
+            e = Expense(expense_id=new_id, date=new_date, price=new_price, amount=new_amount, product=p)
             e.save()
-            for product in products:
-                pr_name = product[0]
-                if pr_name == new_product:
-                    p = Product.objects.get(name=pr_name)
-                    e.product.add(p)
-                    e.save()
+            # for product in products:
+                # pr_name = product[0]
+                # if pr_name == new_product:
+                    
+                    # e.product.add(p)
+                    # e.save()
             log_added += new_id + "<br>"
         else:
             log_excepted = new_id + "<br>"

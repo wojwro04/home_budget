@@ -25,7 +25,7 @@ class Expense(models.Model):
     date = models.DateField()
     price = models.FloatField()
     amount = models.FloatField()
-    product = models.ManyToManyField(Product, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
         return str(self.expense_id)
