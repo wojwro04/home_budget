@@ -106,3 +106,8 @@
 105,rachunki-7,2020-08-23,125.60,1,rachunek za wode
 106,rachunki-8,2020-04-12,126.15,1,rachunek za wode
 107,rachunki-9,2020-04-19,130.70,1,abonament za internet
+108,samochod-5,2021-03-12,110.12,1,naprawa samochodu
+109,samochod-6,2020-04-10,108.21,1,naprawa samochodu
+110,samochod-7,2020-10-11,78.14,1,naprawa samochodu
+111,samochod-8,2019-02-01,216.44,1,naprawa samochodu
+112,samochod-9,2020-05-25,56.14,1,naprawa samochodu

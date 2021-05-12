@@ -17,47 +17,215 @@ from .models import Expense
 from .forms import SearchForm
 
 
-def plot(request):
+def plot(request): #jak zmieniała się cena produktu
+    wanted_product = 'ser'
+    expenses = Expense.objects.filter(product=Product.objects.get(name=wanted_product))
+    d = {}
+    for exp in expenses:
+        #print(f"--{exp} | {exp.date} | {exp.price}")
+        if exp.date in d.keys():
+            d[exp.date].append(exp.price)
+        else:
+            d[exp.date] = []
+            d[exp.date].append(exp.price)
+    labels = sorted(list(d.keys()))
+    x = np.arange(len(labels))
+    sizes = []
+    for lab in labels:
+        sizes.append(np.mean(d[lab]))
+    fig1, ax1 = pl.subplots()
+    rects1 = ax1.plot(x, sizes)
+    rects2 = ax1.plot(x, sizes, 'bo')
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(labels)
+    
+    flike = io.BytesIO()
+    fig1.savefig(flike)
+    b64 = base64.b64encode(flike.getvalue()).decode()
 
-    #cats = Category.objects.all()
+    context = {
+        'chart': b64,
+    }
+    
+    template = loader.get_template('budget/plot.html')
+    return HttpResponse(template.render(context, request))
+    
+def plot2(request): #kiedy była naprawa samochodu, koszt naprawy
+    wanted_product = 'naprawa samochodu'
+    expenses = Expense.objects.filter(product=Product.objects.get(name=wanted_product))
+    d = {}
+    for exp in expenses:
+        #print(f"--{exp} | {exp.date} | {exp.price}")
+        if exp.date in d.keys():
+            d[exp.date].append(exp.price)
+        else:
+            d[exp.date] = []
+            d[exp.date].append(exp.price)
+    labels = sorted(list(d.keys()))
+    x = np.arange(len(labels))
+    sizes = []
+    for lab in labels:
+        sizes.append(np.mean(d[lab]))
+
+    fig1, ax1 = pl.subplots()
+    width = 0.5
+    rects = ax1.bar(x, sizes, width)
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(labels)
+    
+    flike = io.BytesIO()
+    fig1.savefig(flike)
+    b64 = base64.b64encode(flike.getvalue()).decode()
+
+    context = {
+        'chart': b64,
+    }
+    
+    template = loader.get_template('budget/plot.html')
+    return HttpResponse(template.render(context, request))
+
+def plot3(request): # ile razy w roku była naprawa samochodu, suma kosztów napraw
+    wanted_product = 'naprawa samochodu'
+    expenses = Expense.objects.filter(product=Product.objects.get(name=wanted_product))
+    d = {}
+    for exp in expenses:
+        #print(f"--{exp} | {exp.date.year} | {exp.price}")
+        if exp.date.year in d.keys():
+            d[exp.date.year].append(exp.price)
+        else:
+            d[exp.date.year] = []
+            d[exp.date.year].append(exp.price)
+    labels = sorted(list(d.keys()))
+    x = np.arange(len(labels))
+    sizes = []
+    h_labels = []
+    for lab in labels:
+        sizes.append(np.sum(d[lab]))
+        h_labels.append(len(d[lab]))
+    
+    fig1, ax1 = pl.subplots()
+    width = 0.5
+    rects = ax1.bar(x, sizes, width)
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(labels)
+    
+    i = 0
+    for value in rects:
+        height = value.get_height()
+        ax1.text(value.get_x() + value.get_width()/2.,1.002*height,'%d' % int(h_labels[i]), ha='center', va='bottom')
+        i += 1
+    
+    flike = io.BytesIO()
+    fig1.savefig(flike)
+    b64 = base64.b64encode(flike.getvalue()).decode()
+
+    context = {
+        'chart': b64,
+    }
+    
+    template = loader.get_template('budget/plot.html')
+    return HttpResponse(template.render(context, request))
+
+def plot4(request): #wykres kołowy - wydatki na kategorie
     expenses = Expense.objects.all()
     d = {}
     for exp in expenses:
-        sub = Subcategory.objects.get(product=exp.product)
-        cat = Category.objects.get(subcategory=sub)
+        cat = Category.objects.get(expense=exp)
         if cat.name in d.keys():
             d[cat.name].append(exp.price * exp.amount)
         else:
             d[cat.name] = []
             d[cat.name].append(exp.price * exp.amount)
-    #print(d)
-
+    
     labels = list(d.keys())
     sizes = []
     for lab in labels:
         sizes.append(np.sum(d[lab]))
 
-    # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-    explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+    #explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
     fig1, ax1 = pl.subplots()
-    ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-            shadow=True, startangle=90)
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)#, explode=explode)
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
-    #plt.show()
     flike = io.BytesIO()
-    #response = HttpResponse(content_type='image/png')
     fig1.savefig(flike)
     b64 = base64.b64encode(flike.getvalue()).decode()
 
-    context = {}
-    context['chart'] = b64
-
+    context = {
+        'chart': b64,
+    }
+    
     template = loader.get_template('budget/plot.html')
     return HttpResponse(template.render(context, request))
-    return response
+    
+def plot5(request): #wykres kołowy - wydatki w kategorii jedzenie
+    wanted_category = 'jedzenie'
+    expenses = Expense.objects.filter(category=Category.objects.get(name=wanted_category))
+    d = {}
+    for exp in expenses:
+        prod = Product.objects.get(expense=exp)
+        subcat = Subcategory.objects.get(expense=exp)
+        if subcat.name in d.keys():
+            d[subcat.name].append(exp.price * exp.amount)
+        else:
+            d[subcat.name] = []
+            d[subcat.name].append(exp.price * exp.amount)
+    
+    labels = list(d.keys())
+    sizes = []
+    for lab in labels:
+        sizes.append(np.sum(d[lab]))
 
+    #explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+    fig1, ax1 = pl.subplots()
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)#, explode=explode)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    flike = io.BytesIO()
+    fig1.savefig(flike)
+    b64 = base64.b64encode(flike.getvalue()).decode()
+
+    context = {
+        'chart': b64,
+    }
+    template = loader.get_template('budget/plot.html')
+    return HttpResponse(template.render(context, request))
+
+def plot6(request): #wykres kołowy - wydatki w podkategorii nabiał
+    wanted_subcategory = 'nabial'
+    expenses = Expense.objects.filter(subcategory=Subcategory.objects.get(name=wanted_subcategory))
+    d = {}
+    for exp in expenses:
+        prod = Product.objects.get(expense=exp)
+        if prod.name in d.keys():
+            d[prod.name].append(exp.price * exp.amount)
+        else:
+            d[prod.name] = []
+            d[prod.name].append(exp.price * exp.amount)
+    
+    labels = list(d.keys())
+    sizes = []
+    for lab in labels:
+        sizes.append(np.sum(d[lab]))
+
+    #explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+    fig1, ax1 = pl.subplots()
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)#, explode=explode)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    flike = io.BytesIO()
+    fig1.savefig(flike)
+    b64 = base64.b64encode(flike.getvalue()).decode()
+
+    context = {
+        'chart': b64,
+    }
+    template = loader.get_template('budget/plot.html')
+    return HttpResponse(template.render(context, request))
+#######################################################
 
 def index(request):
     template = loader.get_template('budget/index.html')
@@ -132,6 +300,14 @@ def search_results_events(request, events):
 
 #######################################################
 
+def delete(request):
+    Product.objects.all().delete()
+    Subcategory.objects.all().delete()
+    Category.objects.all().delete()
+    Expense.objects.all().delete()
+    Event.objects.all().delete()
+    return HttpResponse("Budget - usunięto")
+    
 def del_products(request):
     Product.objects.all().delete()
     return HttpResponse("Product - usunięto")
@@ -328,14 +504,10 @@ def add_expenses(request):
         q = Expense.objects.filter(expense_id=new_id)
         if len(q) == 0:
             p = Product.objects.get(name=new_product)
-            e = Expense(expense_id=new_id, date=new_date, price=new_price, amount=new_amount, product=p)
+            sc = Subcategory.objects.get(product=p)
+            c = Category.objects.get(subcategory=sc)
+            e = Expense(expense_id=new_id, date=new_date, price=new_price, amount=new_amount, product=p, subcategory=sc, category=c)
             e.save()
-            # for product in products:
-                # pr_name = product[0]
-                # if pr_name == new_product:
-
-                    # e.product.add(p)
-                    # e.save()
             log_added += new_id + "<br>"
         else:
             log_excepted = new_id + "<br>"
@@ -365,3 +537,11 @@ def add_events(request):
             log_excepted = new_title + "<br>"
 
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
+
+def add_all(request):
+    products = add_products(request)
+    subcategories = add_subcategories(request)
+    categories = add_categories(request)
+    expenses = add_expenses(request)
+    events = add_events(request)
+    return HttpResponse("Budget - dodano")
