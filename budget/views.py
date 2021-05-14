@@ -15,6 +15,7 @@ from .models import Product
 from .models import Event
 from .models import Expense
 from .forms import SearchForm
+from .forms import AddEventForm
 
 
 def plot(request): #jak zmieniała się cena produktu
@@ -225,6 +226,7 @@ def plot6(request): #wykres kołowy - wydatki w podkategorii nabiał
     }
     template = loader.get_template('budget/plot.html')
     return HttpResponse(template.render(context, request))
+    
 #######################################################
 
 def index(request):
@@ -425,6 +427,30 @@ def event(request, event):
     return HttpResponse(template.render(context, request))
 
 #######################################################
+
+def add_event(request):
+    if request.method == 'POST':
+        form = AddEventForm(request.POST)
+        if form.is_valid():
+            e = Event(title=request.POST['title'])
+            e.save()
+            expenses = list(Expense.objects.all())
+            p =Product.objects.get(name=request.POST['expense_product'])
+            ex_id = int(expenses[-1].expense_id) + 1
+            ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
+            ex.save()
+            return add_result(request, request.POST['title'])
+    else:
+        form = AddEventForm()
+    template = loader.get_template('budget/add_event.html')
+    return HttpResponse(template.render({'form': form}, request))
+
+def add_result(request, title):
+    template = loader.get_template('budget/add_result.html')
+    context = {
+        'title': title,
+    }
+    return HttpResponse(template.render(context, request))
 
 def add_products(request):
     products = np.loadtxt('products.txt', delimiter=',', dtype='str')

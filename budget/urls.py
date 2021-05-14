@@ -25,6 +25,7 @@ urlpatterns = [
     path('add_categories/', views.add_categories, name='add_categories'),
     path('add_subcategories/', views.add_subcategories, name='add_subcategories'),
     path('add_products/', views.add_products, name='add_products'),
+    path('add_event/', views.add_event, name='add_event'),
     path('add_events/', views.add_events, name='add_events'),
     path('add_expenses/', views.add_expenses, name='add_expenses'),
     path('plot/', views.plot, name='plot'),
