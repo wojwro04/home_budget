@@ -18,6 +18,8 @@ from .forms import SearchForm
 from .forms import AddEventForm
 
 
+def plots(request):
+
 def plot(request): #jak zmieniała się cena produktu
     wanted_product = 'ser'
     expenses = Expense.objects.filter(product=Product.objects.get(name=wanted_product))
@@ -401,10 +403,12 @@ def expenses(request):
 def expense(request, expense):
     expense = Expense.objects.get(expense_id=expense)
     product = Product.objects.get(expense=expense)
+    event = Event.objects.get(expense=expense)
     template = loader.get_template('budget/expense.html')
     context = {
         'expense': expense,
         'product': product,
+        'event': event,
     }
     return HttpResponse(template.render(context, request))
 
