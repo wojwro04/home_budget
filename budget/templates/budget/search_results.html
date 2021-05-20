@@ -1,0 +1,23 @@
+<a href="/budget/">Strona główna</a>
+<h2>Wyniki wyszukiwania:</h2>
+{% if products %}
+	<b>Produkty:</b><br>
+	{% for product in products %}
+		<li><a href="/budget/product/{{ product.name }}/">{{ product.name }}</a></li>
+	{% endfor %}
+	<br>
+{% endif %}
+{% if expenses %}
+	<b>Wydatki:</b><br>
+	{% for expense in expenses %}
+		<li><a href="/budget/expense/{{ expense }}/">{{ expense }} - {{ expense.product }}</a></li>
+	{% endfor %}
+	<br>
+{% endif %}
+{% if events %}
+	<b>Wydarzenia:</b><br>
+	{% for event in events %}
+		<li><a href="/budget/event/{{ event.title }}/">{{ event.title }}</a></li>
+	{% endfor %}
+	<br>
+{% endif %}

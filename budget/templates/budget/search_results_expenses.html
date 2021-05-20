@@ -1,8 +1,8 @@
-<a href="/music/">Strona główna</a>
+<a href="/budget/">Strona główna</a>
 <h2>Wyniki wyszukiwania:</h2>
 {% if expenses %}
 	{% for expense in expenses %}
-		<li><a href="/budget/expense/{{ expense }}/">{{ expense }}</a></li>
+		<li><a href="/budget/expense/{{ expense }}/">{{ expense }} - {{ expense.product }}</a></li>
 	{% endfor %}
 {% else %}
     <p>Nie znaleziono wydatków</p>

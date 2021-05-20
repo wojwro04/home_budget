@@ -1,10 +1,7 @@
 <a href="/budget/">Strona główna</a>
 <h1>Wyszukiwanie</h1>
 <form action="/budget/search/" method="post">
-    <input type="radio" name="choice_field" value="product" checked="checked"/>Produkty<br>
-	<input type="radio" name="choice_field" value="expense" />Wydatki<br>
-	<input type="radio" name="choice_field" value="event" />Wydarzenia<br>
-	{% csrf_token %}
+    {% csrf_token %}
     {{ form }}
     <input type="submit" value="Wyszukaj">
 </form>

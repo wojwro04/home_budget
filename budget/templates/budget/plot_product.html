@@ -1,0 +1,7 @@
+<a href="/budget/">Strona główna</a>
+<h1>Sprawdź historię ceny</h1>
+<form action="/budget/plot_product/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Wykres">
+</form>

@@ -34,4 +34,8 @@ urlpatterns = [
     path('plot4/', views.plot4, name='plot4'),
     path('plot5/', views.plot5, name='plot5'),
     path('plot6/', views.plot6, name='plot6'),
+    path('plot_product/', views.plot_product, name='plot_product'),
+    path('plot_expenses/', views.plot_expenses, name='plot_expenses'),
+    path('plot_product_bar/', views.plot_product_bar, name='plot_product_bar'),
+    path('plots/', views.plots, name='plots'),
 ]

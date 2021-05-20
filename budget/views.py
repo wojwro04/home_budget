@@ -6,7 +6,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as pl
 import io, base64
-
+from django.db.models import Q
 
 
 from .models import Category
@@ -16,13 +16,32 @@ from .models import Event
 from .models import Expense
 from .forms import SearchForm
 from .forms import AddEventForm
-
+from .forms import PlotProductForm
+from .forms import PlotExpensesForm
+from .forms import PlotProductBarForm
 
 def plots(request):
+    template = loader.get_template('budget/plots.html')
+    context = {
+    }
+    return HttpResponse(template.render(context, request))
 
-def plot(request): #jak zmieniała się cena produktu
-    wanted_product = 'ser'
-    expenses = Expense.objects.filter(product=Product.objects.get(name=wanted_product))
+def plot_product(request):
+    if request.method == 'POST':
+        form = PlotProductForm(request.POST)
+        if form.is_valid():
+            p = request.POST['product']
+            expenses = Expense.objects.filter(product=Product.objects.get(name=p))
+            return plot(request, expenses)
+    else:
+        form = PlotProductForm()
+    template = loader.get_template('budget/plot_product.html')
+    context = {
+        'form': form,
+    }
+    return HttpResponse(template.render(context, request))
+
+def plot(request, expenses): #jak zmieniała się cena produktu
     d = {}
     for exp in expenses:
         #print(f"--{exp} | {exp.date} | {exp.price}")
@@ -53,9 +72,29 @@ def plot(request): #jak zmieniała się cena produktu
     template = loader.get_template('budget/plot.html')
     return HttpResponse(template.render(context, request))
     
-def plot2(request): #kiedy była naprawa samochodu, koszt naprawy
-    wanted_product = 'naprawa samochodu'
-    expenses = Expense.objects.filter(product=Product.objects.get(name=wanted_product))
+def plot_product_bar(request):
+    if request.method == 'POST':
+        form = PlotProductBarForm(request.POST)
+        if form.is_valid():
+            if request.POST['choice_field'] == 'full':
+                if request.POST['title']:
+                    r = request.POST['title']
+                    expenses = Expense.objects.filter(product=Product.objects.get(name=r))
+                    return plot2(request, expenses, r)
+            if request.POST['choice_field'] == 'detail':
+                if request.POST['title']:
+                    r = request.POST['title']
+                    expenses = Expense.objects.filter(product=Product.objects.get(name=r))
+                    return plot3(request, expenses, r)
+    else:
+        form = PlotProductBarForm()
+    template = loader.get_template('budget/plot_product_bar.html')
+    context = {
+        'form': form,
+    }
+    return HttpResponse(template.render(context, request))
+
+def plot2(request, expenses, headline): #kiedy była naprawa samochodu, koszt naprawy
     d = {}
     for exp in expenses:
         #print(f"--{exp} | {exp.date} | {exp.price}")
@@ -80,16 +119,14 @@ def plot2(request): #kiedy była naprawa samochodu, koszt naprawy
     fig1.savefig(flike)
     b64 = base64.b64encode(flike.getvalue()).decode()
 
+    template = loader.get_template('budget/plot.html')
     context = {
         'chart': b64,
+        'headline': headline,
     }
-    
-    template = loader.get_template('budget/plot.html')
     return HttpResponse(template.render(context, request))
 
-def plot3(request): # ile razy w roku była naprawa samochodu, suma kosztów napraw
-    wanted_product = 'naprawa samochodu'
-    expenses = Expense.objects.filter(product=Product.objects.get(name=wanted_product))
+def plot3(request, expenses, headline): # ile razy w roku była naprawa samochodu, suma kosztów napraw
     d = {}
     for exp in expenses:
         #print(f"--{exp} | {exp.date.year} | {exp.price}")
@@ -122,15 +159,40 @@ def plot3(request): # ile razy w roku była naprawa samochodu, suma kosztów nap
     fig1.savefig(flike)
     b64 = base64.b64encode(flike.getvalue()).decode()
 
+    template = loader.get_template('budget/plot.html')
     context = {
         'chart': b64,
+        'headline': headline,
     }
-    
-    template = loader.get_template('budget/plot.html')
     return HttpResponse(template.render(context, request))
 
-def plot4(request): #wykres kołowy - wydatki na kategorie
-    expenses = Expense.objects.all()
+def plot_expenses(request):
+    if request.method == 'POST':
+        form = PlotExpensesForm(request.POST)
+        if form.is_valid():
+            if request.POST['choice_field'] == 'category':
+                expenses = Expense.objects.all()
+                return plot4(request, expenses)
+            if request.POST['choice_field'] == 'subcategory':
+                if request.POST['category_title']:
+                    r = request.POST['category_title']
+                    wanted_category = r
+                    expenses = Expense.objects.filter(category=Category.objects.get(name=wanted_category))
+                    return plot5(request, expenses)
+            if request.POST['choice_field'] == 'product':
+                if request.POST['subcategory_title']:
+                    r = request.POST['subcategory_title']
+                    expenses = Expense.objects.filter(subcategory=Subcategory.objects.get(name=r))
+                    return plot6(request, expenses)
+    else:
+        form = PlotExpensesForm()
+    template = loader.get_template('budget/plot_expenses.html')
+    context = {
+        'form': form,
+    }
+    return HttpResponse(template.render(context, request))
+
+def plot4(request, expenses): #wykres kołowy - wydatki na kategorie
     d = {}
     for exp in expenses:
         cat = Category.objects.get(expense=exp)
@@ -162,9 +224,7 @@ def plot4(request): #wykres kołowy - wydatki na kategorie
     template = loader.get_template('budget/plot.html')
     return HttpResponse(template.render(context, request))
     
-def plot5(request): #wykres kołowy - wydatki w kategorii jedzenie
-    wanted_category = 'jedzenie'
-    expenses = Expense.objects.filter(category=Category.objects.get(name=wanted_category))
+def plot5(request, expenses): #wykres kołowy - wydatki w kategorii jedzenie
     d = {}
     for exp in expenses:
         prod = Product.objects.get(expense=exp)
@@ -196,9 +256,7 @@ def plot5(request): #wykres kołowy - wydatki w kategorii jedzenie
     template = loader.get_template('budget/plot.html')
     return HttpResponse(template.render(context, request))
 
-def plot6(request): #wykres kołowy - wydatki w podkategorii nabiał
-    wanted_subcategory = 'nabial'
-    expenses = Expense.objects.filter(subcategory=Subcategory.objects.get(name=wanted_subcategory))
+def plot6(request, expenses): #wykres kołowy - wydatki w podkategorii nabiał
     d = {}
     for exp in expenses:
         prod = Product.objects.get(expense=exp)
@@ -243,6 +301,25 @@ def search(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
         if form.is_valid():
+            if request.POST['choice_field'] == 'all':
+                if request.POST['title']:
+                    if 'exact' in request.POST:
+                        try:
+                            return product(request, request.POST['title'])
+                        except Product.DoesNotExist:
+                            try:
+                                return expense(request, request.POST['title'])
+                            except Expense.DoesNotExist:
+                                try:
+                                    return event(request, request.POST['title'])
+                                except Event.DoesNotExist:
+                                    products = []
+                                    return search_results_products(request, products)
+                    else:
+                        products = Product.objects.filter(name__contains=request.POST['title'])
+                        expenses = Expense.objects.filter(Q(expense_id__contains=request.POST['title']) | Q(product__in=products))
+                        events = Event.objects.filter(Q(title__contains=request.POST['title']) | Q(expense__in=expenses))
+                        return search_results(request, products, expenses, events)
             if request.POST['choice_field'] == 'product':
                 if request.POST['title']:
                     if 'exact' in request.POST:
@@ -263,7 +340,8 @@ def search(request):
                             expenses = []
                             return search_results_expenses(request, expenses)
                     else:
-                        expenses = Expense.objects.filter(expense_id__contains=request.POST['title'])
+                        products = Product.objects.filter(name__contains=request.POST['title'])
+                        expenses = Expense.objects.filter(Q(expense_id__contains=request.POST['title']) | Q(product__in=products))
                         return search_results_expenses(request, expenses)
             if request.POST['choice_field'] == 'event':
                 if request.POST['title']:
@@ -274,12 +352,23 @@ def search(request):
                             events = []
                             return search_results_events(request, events)
                     else:
-                        events = Event.objects.filter(title__contains=request.POST['title'])
+                        products = Product.objects.filter(name__contains=request.POST['title'])
+                        expenses = Expense.objects.filter(product__in=products)
+                        events = Event.objects.filter(Q(title__contains=request.POST['title']) | Q(expense__in=expenses))
                         return search_results_events(request, events)
     else:
         form = SearchForm()
     template = loader.get_template('budget/search.html')
     return HttpResponse(template.render({'form': form}, request))
+
+def search_results(request, products, expenses, events):
+    template = loader.get_template('budget/search_results.html')
+    context = {
+        'products': products,
+        'expenses': expenses,
+        'events': events,
+    }
+    return HttpResponse(template.render(context, request))
 
 def search_results_products(request, products):
     template = loader.get_template('budget/search_results_products.html')
@@ -403,12 +492,10 @@ def expenses(request):
 def expense(request, expense):
     expense = Expense.objects.get(expense_id=expense)
     product = Product.objects.get(expense=expense)
-    event = Event.objects.get(expense=expense)
     template = loader.get_template('budget/expense.html')
     context = {
         'expense': expense,
         'product': product,
-        'event': event,
     }
     return HttpResponse(template.render(context, request))
 
@@ -436,6 +523,23 @@ def add_event(request):
     if request.method == 'POST':
         form = AddEventForm(request.POST)
         if form.is_valid():
+            # e = Event(title=request.POST['title'])
+            # e.save()
+            # expenses = list(Expense.objects.all())
+            # p =Product.objects.get(name=request.POST['expense_product'])
+            # ex_id = int(expenses[-1].expense_id) + 1
+            # ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
+            # ex.save()
+            return add_result(request, request.POST['title'])
+    else:
+        form = AddEventForm()
+    template = loader.get_template('budget/add_event.html')
+    return HttpResponse(template.render({'form': form}, request))
+
+def add_expense(request):
+    if request.method == 'POST':
+        form = AddEventForm(request.POST)
+        if form.is_valid():
             e = Event(title=request.POST['title'])
             e.save()
             expenses = list(Expense.objects.all())
@@ -450,6 +554,8 @@ def add_event(request):
     return HttpResponse(template.render({'form': form}, request))
 
 def add_result(request, title):
+    e = Event(title=title)
+    e.save()
     template = loader.get_template('budget/add_result.html')
     context = {
         'title': title,
