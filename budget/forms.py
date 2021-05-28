@@ -20,7 +20,7 @@ class AddExpenseForm(forms.Form):
     date = forms.DateField(label='Data', required=True)
     price = forms.FloatField(label='Cena', required=True)
     amount = forms.FloatField(label='Ilość', required=True)
-    product = forms.CharField(label='Nazwa produktu', max_length=512, required=True)
+    expense_product = forms.CharField(label='Nazwa produktu', max_length=512, required=True)
     category = forms.CharField(label='Kategoria', max_length=512, required=True)
     subcategory = forms.CharField(label='Podkategoria', max_length=512, required=True)
 

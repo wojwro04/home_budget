@@ -16,6 +16,7 @@ from .models import Event
 from .models import Expense
 from .forms import SearchForm
 from .forms import AddEventForm
+from .forms import AddExpenseForm
 from .forms import PlotProductForm
 from .forms import PlotExpensesForm
 from .forms import PlotProductBarForm
@@ -523,39 +524,35 @@ def add_event(request):
     if request.method == 'POST':
         form = AddEventForm(request.POST)
         if form.is_valid():
-            # e = Event(title=request.POST['title'])
-            # e.save()
+            e = Event(title=request.POST['title'])
+            e.save()
             # expenses = list(Expense.objects.all())
             # p =Product.objects.get(name=request.POST['expense_product'])
             # ex_id = int(expenses[-1].expense_id) + 1
             # ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
             # ex.save()
-            return add_result(request, request.POST['title'])
+            return add_expense(request, request.POST['title'])
     else:
         form = AddEventForm()
     template = loader.get_template('budget/add_event.html')
     return HttpResponse(template.render({'form': form}, request))
 
-def add_expense(request):
+def add_expense(request, event_title):
     if request.method == 'POST':
-        form = AddEventForm(request.POST)
-        if form.is_valid():
-            e = Event(title=request.POST['title'])
-            e.save()
-            expenses = list(Expense.objects.all())
-            p =Product.objects.get(name=request.POST['expense_product'])
-            ex_id = int(expenses[-1].expense_id) + 1
-            ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
-            ex.save()
-            return add_result(request, request.POST['title'])
+        form = AddExpenseForm(request.POST)
+        #if form.is_valid():
+        e = Event.objects.get(title=event_title)
+        p = Product.objects.get(name=request.POST['expense_product'])
+        ex_id = int(expenses[-1].expense_id) + 1
+        ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
+        ex.save()
+        return add_result(request, request.POST['title'])
     else:
-        form = AddEventForm()
+        form = AddExpenseForm()
     template = loader.get_template('budget/add_event.html')
     return HttpResponse(template.render({'form': form}, request))
 
 def add_result(request, title):
-    e = Event(title=title)
-    e.save()
     template = loader.get_template('budget/add_result.html')
     context = {
         'title': title,
