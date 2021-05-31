@@ -28,4 +28,6 @@ $(document).ready( function() {
 		$("#id_subcategory_title").show();
 		$('label[for="id_subcategory_title"]').show();
     });
+	
+
 });

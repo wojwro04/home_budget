@@ -521,21 +521,31 @@ def event(request, event):
 #######################################################
 
 def add_event(request):
+    alert = 0
     if request.method == 'POST':
         form = AddEventForm(request.POST)
         if form.is_valid():
-            e = Event(title=request.POST['title'])
-            e.save()
+            q = Event.objects.filter(title=request.POST['title'])
+            if len(q) == 0:
+                e = Event(title=request.POST['title'])
+                e.save()
+            else:
+                alert = 1
             # expenses = list(Expense.objects.all())
             # p =Product.objects.get(name=request.POST['expense_product'])
             # ex_id = int(expenses[-1].expense_id) + 1
             # ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
             # ex.save()
             return add_expense(request, request.POST['title'])
+            # return add_result(request, request.POST['title'])
     else:
         form = AddEventForm()
     template = loader.get_template('budget/add_event.html')
-    return HttpResponse(template.render({'form': form}, request))
+    context = {
+        'form': form,
+        'alert': alert,
+    }
+    return HttpResponse(template.render(context, request))
 
 def add_expense(request, event_title):
     if request.method == 'POST':
@@ -546,7 +556,7 @@ def add_expense(request, event_title):
         ex_id = int(expenses[-1].expense_id) + 1
         ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
         ex.save()
-        return add_result(request, request.POST['title'])
+        return add_result(request, event_title)
     else:
         form = AddExpenseForm()
     template = loader.get_template('budget/add_event.html')
@@ -559,7 +569,7 @@ def add_result(request, title):
     }
     return HttpResponse(template.render(context, request))
 
-def add_products(request):
+def import_products(request):
     products = np.loadtxt('products.txt', delimiter=',', dtype='str')
     log_added = ""
     log_excepted = ""
@@ -575,7 +585,7 @@ def add_products(request):
 
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
-def add_subcategories(request):
+def import_subcategories(request):
     subcategories = np.loadtxt('subcategories.txt', delimiter=',', dtype='str')
     products = np.loadtxt('products.txt', delimiter=',', dtype='str')
     log_added = ""
@@ -599,7 +609,7 @@ def add_subcategories(request):
 
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
-def add_categories(request):
+def import_categories(request):
     categories = np.loadtxt('categories.txt', delimiter=',', dtype='str')
     subcategories = np.loadtxt('subcategories.txt', delimiter=',', dtype='str')
     log_added = ""
@@ -623,7 +633,7 @@ def add_categories(request):
 
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
-def add_expenses(request):
+def import_expenses(request):
     expenses = np.loadtxt('expenses.txt', delimiter=',', dtype='str')
     products = np.loadtxt('products.txt', delimiter=',', dtype='str')
     log_added = ""
@@ -647,7 +657,7 @@ def add_expenses(request):
 
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
-def add_events(request):
+def import_events(request):
     events = np.loadtxt('events.txt', delimiter=',', dtype='str')
     expenses = np.loadtxt('expenses.txt', delimiter=',', dtype='str')
     log_added = ""
@@ -671,7 +681,7 @@ def add_events(request):
 
     return HttpResponse("Pominięto:<br> %s<br>Dodano:<br>%s" % (log_excepted,log_added))
 
-def add_all(request):
+def import_all(request):
     products = add_products(request)
     subcategories = add_subcategories(request)
     categories = add_categories(request)
