@@ -1,6 +1,7 @@
 from django.urls import path
-
 from . import views
+from .forms import AddEventForm
+from .forms import AddExpenseForm
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -27,7 +28,8 @@ urlpatterns = [
     path('import_subcategories/', views.import_subcategories, name='import_subcategories'),
     path('import_expenses/', views.import_expenses, name='import_expenses'),
     path('import_events/', views.import_events, name='import_events'),
-    path('add_event/', views.add_event, name='add_event'),
+    # path('add_event/', views.add_event, name='add_event'),
+    path('add_event/', views.FormWizardView.as_view([AddEventForm, AddExpenseForm])),
     # path('plot/', views.plot, name='plot'),
     # path('plot2/', views.plot2, name='plot2'),
     # path('plot3/', views.plot3, name='plot3'),

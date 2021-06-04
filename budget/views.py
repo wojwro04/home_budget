@@ -7,7 +7,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as pl
 import io, base64
 from django.db.models import Q
-
+from formtools.wizard.views import SessionWizardView
 
 from .models import Category
 from .models import Subcategory
@@ -520,8 +520,15 @@ def event(request, event):
 
 #######################################################
 
+class FormWizardView(SessionWizardView):
+    template_name = "budget/add_event.html"
+    form_list = [AddEventForm, AddExpenseForm]
+    def done(self, form_list, **kwargs):
+        return render(self.request, 'done.html', {
+            'form_data': [form.cleaned_data for form in form_list],
+        })
+'''
 def add_event(request):
-    alert = 0
     if request.method == 'POST':
         form = AddEventForm(request.POST)
         if form.is_valid():
@@ -529,39 +536,44 @@ def add_event(request):
             if len(q) == 0:
                 e = Event(title=request.POST['title'])
                 e.save()
-            else:
-                alert = 1
             # expenses = list(Expense.objects.all())
             # p =Product.objects.get(name=request.POST['expense_product'])
             # ex_id = int(expenses[-1].expense_id) + 1
             # ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
             # ex.save()
-            return add_expense(request, request.POST['title'])
+            # return add_expense(request, request.POST['title'])
             # return add_result(request, request.POST['title'])
     else:
         form = AddEventForm()
     template = loader.get_template('budget/add_event.html')
     context = {
         'form': form,
-        'alert': alert,
     }
     return HttpResponse(template.render(context, request))
-
+    
 def add_expense(request, event_title):
     if request.method == 'POST':
-        form = AddExpenseForm(request.POST)
-        #if form.is_valid():
         e = Event.objects.get(title=event_title)
-        p = Product.objects.get(name=request.POST['expense_product'])
-        ex_id = int(expenses[-1].expense_id) + 1
-        ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
-        ex.save()
-        return add_result(request, event_title)
+        form = AddExpenseForm(request.POST)
+        if form.is_valid():
+            p = Product.objects.get(name=request.POST['expense_product'])
+        # ex_id = int(expenses[-1].expense_id) + 1
+        # ex = Expense(expense_id=ex_id, date=request.POST['expense_date'], price=request.POST['expense_price'], amount=request.POST['expense_amount'], product=p, subcategory=request.POST['expense_subcategory'], category=request.POST['expense_category'])
+        # ex.save()
+        # print('---',event_title)
+            print('---', p)
+            return add_result(request, event_title)
+        else:
+            print('--- form not valid')
     else:
         form = AddExpenseForm()
+        print('--- else')
     template = loader.get_template('budget/add_event.html')
-    return HttpResponse(template.render({'form': form}, request))
-
+    context = {
+        'form': form,
+    }
+    return HttpResponse(template.render(context, request))
+'''
 def add_result(request, title):
     template = loader.get_template('budget/add_result.html')
     context = {
