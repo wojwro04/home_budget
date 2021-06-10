@@ -17,6 +17,7 @@ from .models import Expense
 from .forms import SearchForm
 from .forms import AddEventForm
 from .forms import AddExpenseForm
+from .forms import AddResultForm
 from .forms import PlotProductForm
 from .forms import PlotExpensesForm
 from .forms import PlotProductBarForm
@@ -522,11 +523,41 @@ def event(request, event):
 
 class FormWizardView(SessionWizardView):
     template_name = "budget/add_event.html"
-    form_list = [AddEventForm, AddExpenseForm]
+    form_list = [AddEventForm, AddExpenseForm]#, AddResultForm]
     def done(self, form_list, **kwargs):
-        return render(self.request, 'done.html', {
-            'form_data': [form.cleaned_data for form in form_list],
-        })
+        cleaned_data = self.get_all_cleaned_data()
+        title = cleaned_data['title']
+        date = cleaned_data['date']
+        price = cleaned_data['price']
+        amount = cleaned_data['amount']
+        product = cleaned_data['product']
+        product_to_add = Product.objects.get(name=product)
+        subcategory = cleaned_data['subcategory']
+        subcategory_to_add = Subcategory.objects.get(name=subcategory)
+        category = cleaned_data['category']
+        category_to_add = Category.objects.get(name=category)
+        q = Event.objects.filter(title=cleaned_data['title'])
+        if len(q) == 0:
+            e = Event(title=cleaned_data['title'])
+            e.save()
+        expenses = list(Expense.objects.all())
+        ex_id = int(expenses[-1].expense_id) + 1
+        ex = Expense(expense_id=ex_id, date=cleaned_data['date'], price=cleaned_data['price'], amount=cleaned_data['amount'], product=product_to_add, subcategory=subcategory_to_add, category=category_to_add)
+        ex.save()
+        e = Event.objects.get(title=cleaned_data['title'])
+        e.expense.add(ex)
+        e.save()
+        context = {
+            'form_data': cleaned_data,
+            'title': cleaned_data['title'],
+            'date': date,
+            'price': price,
+            'amount': amount,
+            'product': product,
+            'subcategory': subcategory,
+            'category': category,
+        }
+        return render(self.request, 'budget/done.html', context)
 '''
 def add_event(request):
     if request.method == 'POST':

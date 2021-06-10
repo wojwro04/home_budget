@@ -29,8 +29,5 @@ $(document).ready( function() {
 		$('label[for="id_subcategory_title"]').show();
     });
 	
-   if (document.AddEventForm.alert.value==1){
-		swal("¡Bien hecho!", "El registro fue exitoso.", "success")
-	}
 
 });

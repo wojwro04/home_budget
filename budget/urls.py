@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
-from .forms import AddEventForm
-from .forms import AddExpenseForm
+from .forms import AddEventForm, AddExpenseForm, AddResultForm
 
 urlpatterns = [
     path('', views.index, name='index'),
