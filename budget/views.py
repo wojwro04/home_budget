@@ -8,6 +8,8 @@ import matplotlib.pyplot as pl
 import io, base64
 from django.db.models import Q
 from formtools.wizard.views import SessionWizardView
+from django.views.generic import TemplateView
+import json
 
 from .models import Category
 from .models import Subcategory
@@ -21,6 +23,7 @@ from .forms import AddResultForm
 from .forms import PlotProductForm
 from .forms import PlotExpensesForm
 from .forms import PlotProductBarForm
+
 
 def plots(request):
     template = loader.get_template('budget/plots.html')
@@ -299,6 +302,12 @@ def index(request):
 
 #######################################################
 
+def auto_search(request):
+    template = loader.get_template('budget/auto_search.html')
+    context = {
+    }
+    return HttpResponse(template.render(context, request))
+
 def search(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
@@ -524,6 +533,25 @@ def event(request, event):
 class FormWizardView(SessionWizardView):
     template_name = "budget/add_event.html"
     form_list = [AddEventForm, AddExpenseForm]#, AddResultForm]
+    
+    def get_form(self, step=None, data=None, files=None):
+        form = super().get_form(step, data, files)
+
+
+        # determine the step if not given
+        if step is None:
+            step = self.steps.current
+
+
+        if step == '1':
+            # pobrać produkty
+            products = Product.objects.all()
+            prod_list = [p.name for p in products]
+            print(prod_list)
+            form.fields["product"].initial = "chleb"
+            #print(form.fields["product"])
+        return form
+    
     def done(self, form_list, **kwargs):
         cleaned_data = self.get_all_cleaned_data()
         title = cleaned_data['title']

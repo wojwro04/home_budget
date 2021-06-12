@@ -5,6 +5,7 @@ from .forms import AddEventForm, AddExpenseForm, AddResultForm
 urlpatterns = [
     path('', views.index, name='index'),
     path('search/', views.search, name='search'),
+    path('auto_search/', views.auto_search, name='auto_search'),
     path('products/', views.products, name='products'),
     path('product/<str:product>/', views.product, name='product'),
     path('subcategories/', views.subcategories, name='subcategories'),

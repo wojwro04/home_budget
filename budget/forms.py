@@ -1,6 +1,7 @@
 from django import forms
 from .models import Category
 from .models import Subcategory
+import datetime
 
 class SearchForm(forms.Form):
     choices = (
@@ -17,7 +18,7 @@ class AddEventForm(forms.Form):
     title = forms.CharField(label='Tytuł', max_length=512, required=True)
     
 class AddExpenseForm(forms.Form):
-    date = forms.DateField(label='Data', required=True)
+    date = forms.DateField(label='Data', initial=datetime.date.today, required=True)
     price = forms.FloatField(label='Cena', required=True)
     amount = forms.FloatField(label='Ilość', required=True)
     product = forms.CharField(label='Nazwa produktu', max_length=512, required=True)
