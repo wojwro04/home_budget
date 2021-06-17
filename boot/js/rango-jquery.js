@@ -29,5 +29,4 @@ $(document).ready( function() {
 		$('label[for="id_subcategory_title"]').show();
     });
 	
-
 });

@@ -10,6 +10,7 @@ from django.db.models import Q
 from formtools.wizard.views import SessionWizardView
 from django.views.generic import TemplateView
 import json
+from dal import autocomplete
 
 from .models import Category
 from .models import Subcategory
@@ -533,24 +534,35 @@ def event(request, event):
 class FormWizardView(SessionWizardView):
     template_name = "budget/add_event.html"
     form_list = [AddEventForm, AddExpenseForm]#, AddResultForm]
-    
     def get_form(self, step=None, data=None, files=None):
         form = super().get_form(step, data, files)
-
-
+        
         # determine the step if not given
         if step is None:
             step = self.steps.current
 
 
-        if step == '1':
+        if step == '0':
             # pobrać produkty
             products = Product.objects.all()
             prod_list = [p.name for p in products]
-            print(prod_list)
-            form.fields["product"].initial = "chleb"
+            #print(prod_list)
+            #form.fields["product"].initial = "chleb"
             #print(form.fields["product"])
         return form
+    
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        products = Product.objects.all()
+        prod_list = [p.name for p in products]
+        data['prod_list'] = prod_list
+        categories = Category.objects.all()
+        cat_list = [c.name for c in categories]
+        data['cat_list'] = cat_list
+        subcategories = Subcategory.objects.all()
+        subcat_list = [s.name for s in subcategories]
+        data['subcat_list'] = subcat_list
+        return data
     
     def done(self, form_list, **kwargs):
         cleaned_data = self.get_all_cleaned_data()

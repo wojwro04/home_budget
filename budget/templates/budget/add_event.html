@@ -4,10 +4,35 @@
 	<meta charset="utf-8">
 	{% load static %}
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-	<script src="{% static 'js/jquery.js' %}"></script>
-	<script src="{% static 'js/rango-jquery.js' %}"></script>
+	<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+        rel = "stylesheet">
+    <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <!-- Javascript -->
+    <script>
+       $(function() {
+            var prod_list = {{ prod_list|safe }};
+			$( "#id_1-product" ).autocomplete({
+               source: prod_list
+            });
+        });
+    </script>
+	<script>
+       $(function() {
+            var cat_list = {{ cat_list|safe }};
+			$( "#id_1-category" ).autocomplete({
+               source: cat_list
+            });
+        });
+    </script>
+	<script>
+       $(function() {
+            var subcat_list = {{ subcat_list|safe }};
+			$( "#id_1-subcategory" ).autocomplete({
+               source: subcat_list
+            });
+        });
+    </script>
   </head>
 <body>
 {% load i18n %}
@@ -31,7 +56,7 @@
 {% if wizard.steps.prev %}
 	<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
 {% endif %}
-<input type="submit" value="{% trans "submit" %}"/>
+<input type="submit" value="{% trans 'submit' %}"/>
 </form>
 {% endblock %}
 </body>
